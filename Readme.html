@@ -1,0 +1,39 @@
+﻿<h1>MVP solution</h1>
+<h3>Assumptions:</h3>
+<ol>
+<li>We already have a component called producer(s) that publishes &quot;berlin housing data&quot; json objects into a Kafka Topic.</li>
+</ol>
+<h3>Description of components:</h3>
+<p><strong>1. A Kafka cluster:</strong></p>
+<ul>
+<li>A kafka cluster is running that has a topic into which the berlin housing data would be published by the producer(s).</li>
+<li>I have chosen this solution because persistence is offered out of the box.</li>
+<li>We could also have chosen AWS S3 or Managed Streaming Kafka(MSK) or Kinesis offered by AWS.</li>
+</ul>
+<p><strong>2. Time-triggered Lambda consumer</strong></p>
+<ul>
+<li>This is a lambda function (written in python) that would be triggered every hour (configurable via Schedule expression: cron(0/1 * 1/1 * ? *)).</li>
+<li>This function will read data from Kafka topic, parse the messages and push the data into the Redshift cluster. (Definion Filename: <a href="https://github.com/kamalnroy/berlinhousingdata/blob/master/LambdaKafkaConsumer.py" title="LambdaKafkaConsumer.py">LambdaKafkaConsumer.py</a>)</li>
+<li>Limitations: The code file just contains a blue print of the solution in the form of algorithm</li>
+</ul>
+<p>**3. AWS redshift cluster **</p>
+<ul>
+<li>This is a managed datawarehouse solution offered by AWS.</li>
+<li>(Other options: Snowflake; we can also design a datawarehouse inside an RDMBS such as PostGreSQL or MySQL)</li>
+</ul>
+<p>**4. GetApartments Lambda function **</p>
+<ul>
+<li>This function will serve the analysts by querying data from the datawarehouse, depending on the user queries. (Definiton file name: <a href="https://github.com/kamalnroy/berlinhousingdata/blob/master/GetAvailableApartments.py" title="GetAvailableApartments.py">GetAvailableApartments.py</a> )</li>
+<li>The code file just contains a blue print of the solution in the form of algorithm.</li>
+</ul>
+<p><strong>5. Lambda Proxy API</strong></p>
+<ul>
+<li>This is a proxy API for the lambda function &quot;GetApartments&quot;, as mentioned in (4.). This API can be called via HTTP get/post requests.</li>
+</ul>
+<p>##DataWarehouse schema</p>
+<ul>
+<li>I designed this using MySQL Workebench. Filename is <a href="https://github.com/kamalnroy/berlinhousingdata/blob/master/berlin_housing_dw_model.mwb">https://github.com/kamalnroy/berlinhousingdata/blob/master/berlin_housing_dw_model.mwb</a></li>
+<li>A pictorial format is there too <a href="https://github.com/kamalnroy/berlinhousingdata/blob/master/berlin_housing_dw_model.png">https://github.com/kamalnroy/berlinhousingdata/blob/master/berlin_housing_dw_model.png</a></li>
+<li>This is a hybrid schema (mix of star and snowflake)</li>
+<li>Limitations: All the fields and their types are not there in the schema yet, but gives an idea of the solution</li>
+</ul>
