@@ -1,5 +1,8 @@
 ﻿# MVP solution
 
+### Limitation(s):
+- This is not a full working solution and just a blueprint of the solution. 
+- I have executed the entire pipeline (other than the python code. The python code was very simple, but quite time consuming, hence I just added added alogorithmic steps.)
 ### Assumptions:
 1. We already have a component called producer(s) that publishes "berlin housing data" json objects into a Kafka Topic.
 
